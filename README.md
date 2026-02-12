@@ -14,7 +14,6 @@ A beautiful, lightweight, and reliable "Now Playing" widget for OBS Studio with 
 - ⚡ **Low latency** - updates every 200ms
 - 🔄 **Auto-reconnect** - handles connection drops gracefully
 - 🎯 **Native integration** - reads directly from Windows Media Control (MPRIS on Linux)
-- 🚫 **No file locking issues** - unlike Tuna plugin
 - 🎭 **Multiple themes** - customizable appearance
 - 📱 **Works with any media player** - Deezer, Spotify, VLC, YouTube Music, etc.
 
