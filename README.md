@@ -23,7 +23,7 @@ A beautiful, lightweight, and reliable "Now Playing" widget for OBS Studio with 
 ![Widget in OBS](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/widget.jpg)
 
 ### CLI Dashboard
-![Dashboard](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/widget.jpg)](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/dashboard.jpg)
+![Dashboard](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/dashboard.jpg)
 
 ## 📋 Requirements
 
