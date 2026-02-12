@@ -1,6 +1,8 @@
-# 🎵 Custom Now Playing for OBS
+# 🎵 Now Playing Overlay
 
-A beautiful, lightweight, and reliable "Now Playing" widget for OBS Studio with real-time media control integration.
+A beautiful, lightweight "Now Playing" widget for OBS Studio and streaming software.
+
+**Cross-platform** • **Real-time** • **Zero configuration**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
@@ -8,208 +10,272 @@ A beautiful, lightweight, and reliable "Now Playing" widget for OBS Studio with 
 
 ## ✨ Features
 
-- 🎨 **Beautiful animated widget** with smooth transitions
-- 📊 **Real-time CLI dashboard** showing current playback
-- 🖼️ **Album artwork support** with fade animations
-- ⚡ **Low latency** - updates every 200ms
-- 🔄 **Auto-reconnect** - handles connection drops gracefully
-- 🎯 **Native integration** - reads directly from Windows Media Control (MPRIS on Linux)
-- 🎭 **Multiple themes** - customizable appearance
-- 📱 **Works with any media player** - Deezer, Spotify, VLC, YouTube Music, etc.
+- 🎨 **Smooth animations** - Fade transitions for artwork, text, and progress
+- 📊 **Beautiful CLI dashboard** - Real-time display in your terminal
+- 🖼️ **Album artwork** - Automatically fetches and displays cover art
+- ⚡ **Low latency** - Updates every 200ms for responsive display
+- 🔄 **Auto-reconnect** - Handles disconnections gracefully
+- 🌍 **Cross-platform** - Works on Windows and Linux with zero config
+- 🎯 **Universal support** - Works with any media player (Spotify, Deezer, VLC, etc.)
+- 🎭 **Customizable** - Easy color and style customization
 
 ## 🖼️ Screenshots
 
-### Widget in OBS
-![Widget in OBS](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/widget.jpg)
-
-### CLI Dashboard
-![Dashboard](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/dashboard.jpg)
-
-## 📋 Requirements
-
-- Python 3.8 or higher
-- OBS Studio
-- Windows 10/11 (or Linux with MPRIS support)
-- A media player (Deezer, Spotify, VLC, etc.)
+*Coming soon - Add your screenshots here!*
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Prerequisites
 
-```bash
-pip install -r requirements.txt
-```
+- **Python 3.8+**
+- **OBS Studio** (or any streaming software with browser sources)
+- **A media player** (Spotify, Deezer, VLC, etc.)
 
-**Requirements:**
-- `websockets` - WebSocket server
-- `aiohttp` - HTTP server for album artwork
-- `winsdk` - Windows Media Control integration (Windows only)
-- `rich` - Beautiful CLI dashboard
+### Installation
 
-### 2. Run the Server
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/now-playing-overlay.git
+   cd now-playing-overlay
+   ```
 
-```bash
-python server/now-playing-server.py
-```
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   
+   The installer automatically detects your OS and installs the correct backend:
+   - **Windows**: Windows Media Control (WMC)
+   - **Linux**: MPRIS
 
-You should see a beautiful dashboard displaying:
-- Current track information
-- Playback progress bar
-- Server status
-- Connected clients count
+3. **Run the server**
+   ```bash
+   python server.py
+   ```
+   
+   You should see a beautiful dashboard in your terminal! 🎉
 
-### 3. Add Widget to OBS
+### Add to OBS
 
 1. In OBS, add a **Browser Source**
-2. Configure it:
-   - **Local file**: ✅ Checked
-   - **Local file path**: Browse to `widget/now-playing-widget.html`
-   - **Width**: `1800`
-   - **Height**: `450`
-3. Resize the source in your scene to `600x150` (for crisp 3x rendering)
-4. Done! The widget will automatically connect and display your music
+2. Configure:
+   - ✅ **Local file**: Checked
+   - 📁 **Local file path**: Browse to `widget/now-playing-widget.html`
+   - 📏 **Width**: `1800`
+   - 📏 **Height**: `450`
+3. In your scene, **resize the source to 600×150** for crisp rendering
+4. Done! The widget auto-connects and displays your music
 
 ## 🎨 Customization
 
-The widget uses CSS variables for easy color customization.
+### Colors
 
-Edit `now-playing-widget.html`:
+Edit `now-playing-widget.html` and change the CSS variables:
 
 ```css
 :root {
-    /* Zoom level for high resolution (1 = normal, 3 = 3x for crisp 4K) */
-    --zoom-level: 3;
-    
-    /* Colors - customize these! */
-    --bg-color: #1e1e1e;
-    --progress-bg: #2a2a2a;
-    --progress-active: #4a9eff;
+    --zoom-level: 3;           /* Resolution multiplier (1-4) */
+    --bg-color: #1e1e1e;       /* Widget background */
+    --progress-bg: #2a2a2a;    /* Progress bar background */
+    --progress-active: #4a9eff; /* Progress bar color */
 }
 ```
 
-**Font**: Uses Montserrat from Google Fonts (free, no license required).
+### Fonts
+
+The widget uses **Montserrat** from Google Fonts (free for all uses).
+
+To use a different font:
+1. Replace the `@import` URL in the `<style>` section
+2. Update `font-family` properties in the CSS
 
 ## ⚙️ Configuration
 
 ### Server Ports
 
-Edit `now-playing-server.py`:
+Edit `server.py` to change default ports:
 
 ```python
-# Ports
-WS_PORT = 6534  # WebSocket for widget data
-HTTP_PORT = 6535  # HTTP for album artwork
+WS_PORT = 6534   # WebSocket for widget data
+HTTP_PORT = 6535 # HTTP for album artwork
+```
+
+### High DPI / 4K Displays
+
+The widget renders at 3× resolution by default for crisp display. Adjust if needed:
+
+```css
+--zoom-level: 3;  /* 1 = normal, 2 = 2K, 3 = 4K, 4 = 8K */
 ```
 
 ## 🐛 Troubleshooting
 
 ### Widget shows nothing
-- Make sure the server is running (`python now-playing-server.py`)
-- Check that a media player is playing music
-- Verify the browser source dimensions (1800x450)
+
+- ✅ Make sure the server is running (`python server.py`)
+- ✅ Check that a media player is playing music
+- ✅ Verify browser source dimensions: **1800×450**
+- ✅ Try refreshing the browser source in OBS
 
 ### No album artwork
-- Verify the media player supports artwork (Deezer Desktop, Spotify Desktop work well)
-- Check the server logs for cover loading errors
 
-### Server won't close properly
-- Press `Ctrl+C` in the terminal
-- The server should close cleanly with all resources freed
+- **Windows**: Some apps don't provide artwork via WMC. Works best with Spotify Desktop, Deezer Desktop, VLC
+- **Linux**: Player must support MPRIS artwork. **Works with**: VLC, Spotify, Deezer Desktop, Rhythmbox
+- **Doesn't work**: Chrome/Chromium (buggy MPRIS implementation)
+- Check the server dashboard - it shows if artwork is available
 
-### OBS Browser Source shows a blank screen
-- Right-click the source → **Interact**
-- Press `F12` to open developer tools
-- Check the Console tab for errors
+### Server won't start
 
-## 🔧 Advanced Usage
+**Windows:**
+```bash
+pip install winsdk
+```
 
-### Custom Colors
+**Linux (Ubuntu/Debian):**
+```bash
+# Install system dependencies
+sudo apt install python3-gi python3-gi-cairo gir1.2-glib-2.0 python3-pydbus
 
-Change the CSS variables at the top of `now-playing-widget.html`:
-- `--bg-color`: Widget background
-- `--progress-bg`: Progress bar background
-- `--progress-active`: Progress bar fill color
+# Verify installation
+python3 -c "import gi; from pydbus import SessionBus; print('OK')"
+```
 
-### Custom Fonts
+**Linux (Arch):**
+```bash
+sudo pacman -S python-gobject python-dbus
+pip install pydbus
+```
 
-To use different fonts:
-1. Replace the Google Fonts import URL
-2. Update `font-family` properties in the CSS
+**Linux (Fedora):**
+```bash
+sudo dnf install python3-gobject python3-dbus
+pip install pydbus
+```
 
-### Multiple Widgets
+### Widget not connecting
 
-Run multiple instances on different ports:
-1. Copy the server script
-2. Change `WS_PORT` and `HTTP_PORT`
-3. Update widget connection port accordingly
+- Check the browser console (right-click source → Interact → F12)
+- Verify the server is running and shows "Connected clients: 0"
+- Make sure no firewall is blocking localhost connections
 
-## 🐧 Linux Support
+### Linux: No playback detected
 
-Linux support via MPRIS is planned. The architecture is ready, only the media control backend needs to be swapped.
+- **Supported players**: VLC, Spotify, Deezer Desktop, Rhythmbox, Audacious
+- **Not supported**: Chrome/Chromium (broken MPRIS), web players in browsers
+- Verify your player supports MPRIS:
+  ```bash
+  dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames > /tmp/dbus.txt
+  grep mpris /tmp/dbus.txt
+  ```
+- If nothing shows up, your player doesn't support MPRIS
 
-**To contribute Linux support:**
-1. Replace `winsdk` with `pydbus` 
-2. Implement MPRIS2 interface reading
-3. Test with popular Linux media players
-
-Pull requests welcome!
-
-## 📝 How It Works
+## 📖 How It Works
 
 ```
-Media Player (Deezer/Spotify/etc.)
+Media Player (Spotify/VLC/etc.)
          ↓
-Windows Media Control / MPRIS
+OS Media Control (WMC/MPRIS)
          ↓
 Python Server (WebSocket + HTTP)
          ↓
 OBS Browser Source (Widget)
 ```
 
-The server:
-1. Reads media info from Windows Media Control every 200ms
-2. Extracts album artwork and serves it via HTTP
-3. Broadcasts updates to all connected widgets via WebSocket
-4. Displays a real-time dashboard in the terminal
+**Server:**
+- Reads media info from your OS every 200ms
+- Extracts and serves album artwork via HTTP
+- Broadcasts updates to widgets via WebSocket
+- Displays a real-time dashboard
 
-The widget:
-1. Connects to the server via WebSocket
-2. Receives updates and animates smoothly
-3. Loads album artwork from the HTTP server
-4. Handles disconnections and auto-reconnects
+**Widget:**
+- Connects to server via WebSocket
+- Receives updates and animates smoothly
+- Loads artwork from HTTP endpoint
+- Auto-reconnects on disconnection
+
+## 🔧 Advanced Usage
+
+### Multiple Instances
+
+Run multiple servers on different ports:
+
+1. Copy `server.py` to `server2.py`
+2. Edit ports: `WS_PORT = 6536`, `HTTP_PORT = 6537`
+3. Update widget to connect to new port
+4. Run both servers simultaneously
+
+### Custom Themes
+
+Create new themes by copying `now-playing-widget.html`:
+
+1. Duplicate the file: `now-playing-widget-mytheme.html`
+2. Modify colors, fonts, layout
+3. Share your theme! (See CONTRIBUTING.md)
+
+### Streaming Software
+
+Works with:
+- ✅ OBS Studio
+- ✅ Streamlabs Desktop
+- ✅ XSplit
+- ✅ Any software supporting browser sources
 
 ## 🤝 Contributing
 
-This is a personal project shared with the community. While contributions are welcome, please note:
+This is a personal project with **limited maintenance**.
 
-- **Limited maintenance**: I may not respond immediately to issues or PRs
-- **Best effort support**: Use at your own risk, no guarantees
-- **Community-driven**: Feel free to fork and adapt to your needs
+- 🐛 **Bug reports**: Welcome! Open an issue
+- ✨ **Feature requests**: Feel free to suggest, but no guarantees
+- 🔧 **Pull requests**: Appreciated! I'll review when possible
+- 🎨 **Themes**: Submit new themes, they'll likely get merged
 
-If you want to contribute:
-- **Bug fixes**: Always appreciated, open a PR
-- **New features**: Fork the repo and go wild!
-- **Linux support**: This would be amazing! See CONTRIBUTING.md
-- **Themes**: Submit new themes, they'll likely get merged
+**No support SLA.** This is hobby time, not a product. Fork freely!
 
-**No expectations, no pressure.** This is a tool I built for myself and decided to share. If it helps you, awesome! If you improve it, even better!
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## 📜 License
 
-MIT License - see LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
-Uses Montserrat font (Google Fonts, Open Font License) - free for all uses.
+Uses **Montserrat** font from Google Fonts ([Open Font License](https://scripts.sil.org/OFL)) - free for all uses.
+
+## 💡 Tips
+
+- **Performance**: The server uses ~20MB RAM and negligible CPU
+- **Compatibility**: Tested on Windows 10/11 and Ubuntu/Debian/Arch Linux
+- **Privacy**: All data stays local - no internet connection required
+- **Customization**: All CSS is in the HTML file for easy tweaking
+
+### Supported Media Players
+
+**Windows (WMC):**
+- ✅ Spotify Desktop
+- ✅ Deezer Desktop
+- ✅ VLC
+- ✅ Windows Media Player
+- ✅ iTunes
+- ❌ Web players (Spotify Web, YouTube Music in browser)
+
+**Linux (MPRIS):**
+- ✅ VLC
+- ✅ Spotify (Desktop/Snap/Flatpak)
+- ✅ Deezer Desktop
+- ✅ Rhythmbox
+- ✅ Audacious
+- ✅ Clementine
+- ❌ Chrome/Chromium (buggy MPRIS implementation)
+- ❌ Web players
 
 ## ⭐ Support
 
 If you find this useful:
 - ⭐ Star the repo
-- 🐛 Report bugs (I'll fix when I can)
-- 🔧 Submit PRs (I'll review when possible)
+- 🐛 Report bugs when you find them
+- 🔧 Submit PRs if you fix/improve something
 - 📣 Share with other streamers
 
-**No support guarantees, but I'll do my best when time allows!**
+**Built by a streamer, for streamers. Enjoy! 🎮🎵**
 
 ---
 
-**Built by a streamer, for streamers. Enjoy! 🎮🎵**
+*No support guarantees, but I'll help when I can!*
