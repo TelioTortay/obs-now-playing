@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;700&display=swap');
+
+    :root {
+        --zoom-level: 3;
+        --bg-color: #1e1e1e;
+        --progress-bg: #2a2a2a;
+        --progress-active: #4a9eff;
+    }
+
+    body {
+        margin: 0px;
+        overflow: hidden;
+        zoom: var(--zoom-level);
+    }
+
+    .info {
+        overflow: hidden;
+        padding-left: 20px;
+        padding-right: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .widget {
+        padding: 8px;
+        background-color: var(--bg-color);
+        border-radius: 4px;
+        border-color: rgb(22, 22, 22);
+        height: 120px;
+        box-shadow: 0px 0px 5px black;
+        margin: 8px;
+        position: relative;
+        z-index: -2;
+    }
+
+    #cover {
+        height: 100%;
+        transition: background-image 0.8s ease-in-out, opacity 0.3s ease-in-out;
+        aspect-ratio: 1;
+        background-size: cover;
+        border-radius: 4px;
+        box-shadow: 0 0 4px 4px rgba(0, 0, 0, .5) inset;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 1;
+    }
+
+    .image-box {
+        border-radius: 4px;
+        border-width: 1px;
+        height: 100%;
+        float: left;
+    }
+
+    #title-container, #artist-container {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+    }
+
+    #title, #artist {
+        white-space: nowrap;
+        display: inline-block;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: x-large;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    #artist {
+        font-family: 'Montserrat', sans-serif;
+        font-size: medium;
+        font-weight: 300;
+    }
+
+    #title.changing, #artist.changing {
+        opacity: 0;
+    }
+
+    #title.scrolling::after, #artist.scrolling::after {
+        content: attr(data-text);
+        padding-left: 50px;
+    }
+
+    #title.scrolling, #artist.scrolling {
+        animation: scroll-text 25s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    }
+
+    @keyframes scroll-text {
+        0%, 15% { transform: translateX(0); }
+        85%, 100% { transform: translateX(var(--scroll-distance)); }
+    }
+
+    p {
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        margin: 0px;
+        padding-bottom: 2px;
+    }
+
+    #progressbar, #progress {
+        background-color: var(--progress-bg);
+        height: 6px;
+        width: 100%;
+        border-radius: 2px;
+    }
+
+    #progressbar {
+        position: relative;
+        margin-bottom: 0px;
+        margin-top: 8px;
+    }
+
+    #progress {
+        background-color: var(--progress-active);
+        width: 0%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 6px;
+        transition: width 0.5s linear;
+    }
+
+    #timeline {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #progressbar-container {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    #time-display {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    #length, #time-passed {
+        font-size: small;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #length.changing, #time-passed.changing {
+        opacity: 0;
+    }
+</style>
+</head>
+
+<body>
+    <div class="widget">
+        <div class="image-box">
+            <div id="cover"></div>
+        </div>
+        <div class="info">
+            <div id="artist-container">
+                <p id="artist">&nbsp;</p>
+            </div>
+            <div id="title-container">
+                <p id="title">&nbsp;</p>
+            </div>
+            <div id="timeline">
+                <div id="progressbar-container">
+                    <div id="progressbar">
+                        <div id="progress"></div>
+                    </div>
+                </div>
+                <div id="time-display">
+                    <p id="time-passed">0:00</p>
+                    <p id="length">0:00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    const PAUSED_PLACEHOLDER = "-";
+    let ws = null;
+    let reconnectTimeout = null;
+    let last_title = '';
+    let last_artist = '';
+    let last_cover = '';
+    let last_position_update = 0;
+    let last_position_value = 0;
+    
+    function format_ms(ms) {
+        if (!ms || ms < 0) return '0:00';
+        let secs = Math.floor(ms / 1000);
+        let mins = Math.floor(secs / 60);
+        let hrs = Math.floor(mins / 60);
+        secs = secs % 60;
+        mins = mins % 60;
+        if (secs < 10) secs = '0' + secs;
+        if (hrs > 0) {
+            if (mins < 10) mins = '0' + mins;
+            return hrs + ':' + mins + ':' + secs;
+        }
+        return mins + ':' + secs;
+    }
+    
+    function setupScrolling(element, text) {
+        element.classList.remove('scrolling');
+        element.setAttribute('data-text', text);
+        setTimeout(() => {
+            const containerWidth = element.parentElement.clientWidth;
+            const textWidth = element.scrollWidth;
+            if (textWidth > containerWidth) {
+                const scrollDistance = -(textWidth + 50);
+                element.style.setProperty('--scroll-distance', `${scrollDistance}px`);
+                void element.offsetWidth;
+                element.classList.add('scrolling');
+            }
+        }, 100);
+    }
+    
+    function updateUI(mediaInfo) {
+        const titleElement = document.getElementById('title');
+        const artistElement = document.getElementById('artist');
+        const coverElement = document.getElementById('cover');
+        const progressBar = document.getElementById('progress');
+        const lengthElement = document.getElementById('length');
+        const timePassedElement = document.getElementById('time-passed');
+        
+        const newTitle = mediaInfo.title || '';
+        if (newTitle !== last_title) {
+            titleElement.classList.remove('scrolling');
+            titleElement.classList.add('changing');
+            setTimeout(() => {
+                if (!newTitle) {
+                    titleElement.innerText = PAUSED_PLACEHOLDER;
+                    titleElement.removeAttribute('data-text');
+                } else {
+                    titleElement.innerText = newTitle;
+                    setupScrolling(titleElement, newTitle);
+                }
+                titleElement.classList.remove('changing');
+            }, 300);
+            last_title = newTitle;
+        }
+        
+        const newArtist = mediaInfo.artist || '';
+        if (newArtist !== last_artist) {
+            artistElement.classList.remove('scrolling');
+            artistElement.classList.add('changing');
+            setTimeout(() => {
+                if (!newArtist) {
+                    artistElement.innerHTML = "&nbsp;";
+                    artistElement.removeAttribute('data-text');
+                } else {
+                    artistElement.innerHTML = newArtist;
+                    setupScrolling(artistElement, newArtist);
+                }
+                artistElement.classList.remove('changing');
+            }, 300);
+            last_artist = newArtist;
+        }
+        
+        const newCover = mediaInfo.cover_url || '';
+        if (newCover !== last_cover) {
+            coverElement.style.opacity = '0';
+            setTimeout(() => {
+                coverElement.style.backgroundImage = 'none';
+                if (newCover) {
+                    setTimeout(() => {
+                        coverElement.style.backgroundImage = `url(${newCover})`;
+                        coverElement.style.opacity = '1';
+                    }, 100);
+                } else {
+                    coverElement.style.opacity = '1';
+                }
+            }, 300);
+            last_cover = newCover;
+        }
+        
+        const position = (mediaInfo.position_seconds || 0) * 1000;
+        const duration = (mediaInfo.duration_seconds || 0) * 1000;
+        const now = Date.now();
+        
+        const shouldUpdatePosition = (now - last_position_update > 1000) || 
+                                     (position < last_position_value - 2000);
+        
+        if (position < 1000 && last_title !== newTitle) {
+            last_position_value = position;
+            last_position_update = now;
+            
+            lengthElement.classList.add('changing');
+            timePassedElement.classList.add('changing');
+            progressBar.style.transition = 'width 0.3s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                lengthElement.innerText = format_ms(duration);
+                timePassedElement.innerText = format_ms(position);
+                lengthElement.classList.remove('changing');
+                timePassedElement.classList.remove('changing');
+                progressBar.style.transition = 'width 0.5s linear';
+                progressBar.style.width = duration > 0 ? (position / duration) * 100 + '%' : '0%';
+            }, 300);
+        } else if (shouldUpdatePosition) {
+            last_position_value = position;
+            last_position_update = now;
+            lengthElement.innerText = format_ms(duration);
+            timePassedElement.innerText = format_ms(position);
+            progressBar.style.width = duration > 0 ? (position / duration) * 100 + '%' : '0%';
+        } else {
+            lengthElement.innerText = format_ms(duration);
+        }
+    }
+    
+    function connectWebSocket() {
+        ws = new WebSocket('ws://localhost:6534');
+        reconnectTimeout = setTimeout(() => {
+            if (ws.readyState !== WebSocket.OPEN) retry();
+        }, 5000);
+        ws.onopen = () => {
+            ws.send('RECIPIENT');
+            clearTimeout(reconnectTimeout);
+        };
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                updateUI(data);
+            } catch (e) {}
+        };
+        ws.onerror = () => retry();
+        ws.onclose = () => retry();
+    }
+    
+    function retry() {
+        clearTimeout(reconnectTimeout);
+        try {
+            ws.onclose = null;
+            ws.onerror = null;
+            ws.close();
+        } catch {}
+        ws = null;
+        setTimeout(connectWebSocket, 2000);
+    }
+    
+    connectWebSocket();
+</script>
+</html>
