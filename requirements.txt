@@ -1,0 +1,4 @@
+websockets>=12.0
+aiohttp>=3.9.0
+winsdk>=1.0.0b10; sys_platform == 'win32'
+rich>=13.0.0
