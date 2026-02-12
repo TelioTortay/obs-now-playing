@@ -20,10 +20,10 @@ A beautiful, lightweight, and reliable "Now Playing" widget for OBS Studio with 
 ## 🖼️ Screenshots
 
 ### Widget in OBS
-*Insert screenshot of widget here*
+![Widget in OBS](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/widget.jpg)
 
 ### CLI Dashboard
-*Insert screenshot of dashboard here*
+![Dashboard](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/widget.jpg)](https://github.com/TelioTortay/nowplaying-wmc/blob/main/screenshots/dashboard.jpg)
 
 ## 📋 Requirements
 
