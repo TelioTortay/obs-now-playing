@@ -43,9 +43,7 @@ flatpak run io.github.TelioTortay.ObsNowPlaying
 
 **⚠️ Important:** Do not use the "Open" button in GNOME Software Center. Launch from terminal (command above) or from your application menu.
 
-**Widget Location:** The HTML widget for OBS is located at:
-- Flatpak: `~/.var/app/io.github.TelioTortay.ObsNowPlaying/share/obs-now-playing/widget.html`
-- Or download it from the [releases page](https://github.com/teliotortay/obs-now-playing/releases)
+**Widget Location:** Download the HTML widget here: [releases page](https://github.com/teliotortay/obs-now-playing/releases)
 
 [More details on the Flatpak repository →](https://teliotortay.github.io/obs-now-playing-flatpak/)
 
