@@ -7,6 +7,7 @@ A beautiful, lightweight "Now Playing" widget for OBS Studio and streaming softw
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey.svg)
+[![Flatpak](https://img.shields.io/badge/flatpak-available-blue)](https://teliotortay.github.io/obs-now-playing-flatpak/)
 
 ## ✨ Features
 
@@ -30,7 +31,38 @@ Linux             |  Windows
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Linux (Flatpak)
+
+The easiest way to install on Linux:
+
+```bash
+flatpak remote-add --user obs-now-playing https://teliotortay.github.io/obs-now-playing-flatpak/obs-now-playing.flatpakrepo
+flatpak install obs-now-playing io.github.TelioTortay.ObsNowPlaying
+flatpak run io.github.TelioTortay.ObsNowPlaying
+```
+
+**⚠️ Important:** Do not use the "Open" button in GNOME Software Center. Launch from terminal (command above) or from your application menu.
+
+**Widget Location:** The HTML widget for OBS is located at:
+- Flatpak: `~/.var/app/io.github.TelioTortay.ObsNowPlaying/share/obs-now-playing/widget.html`
+- Or download it from the [releases page](https://github.com/teliotortay/obs-now-playing/releases)
+
+[More details on the Flatpak repository →](https://teliotortay.github.io/obs-now-playing-flatpak/)
+
+### Windows (Standalone Executable)
+
+The easiest way to run on Windows:
+
+1. Download the latest `NowPlayingServer.exe` from [Releases](https://github.com/teliotortay/obs-now-playing/releases)
+2. Double-click to run (a terminal window will open with the server)
+3. Download `now-playing-widget.html` from the same release
+4. Add it to OBS (see instructions below)
+
+No installation required - just download and run!
+
+### From Source
+
+#### Prerequisites
 
 - **Python 3.8+**
 - **OBS Studio** (or any streaming software with browser sources)
@@ -38,10 +70,29 @@ Linux             |  Windows
 
 ### Installation
 
+**Linux (Flatpak - Recommended):**
+
+```bash
+# Add the repository
+flatpak remote-add --user obs-now-playing https://teliotortay.github.io/obs-now-playing-flatpak/obs-now-playing.flatpakrepo
+
+# Install
+flatpak install obs-now-playing io.github.TelioTortay.ObsNowPlaying
+
+# Run
+flatpak run io.github.TelioTortay.ObsNowPlaying
+```
+
+Or launch **OBS Now Playing** from your application menu!
+
+More info: [Flatpak Repository](https://teliotortay.github.io/obs-now-playing-flatpak/)
+
+**Windows / Manual Installation:**
+
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/now-playing-overlay.git
-   cd now-playing-overlay
+   git clone https://github.com/teliotortay/obs-now-playing.git
+   cd obs-now-playing
    ```
 
 2. **Install dependencies**
@@ -65,7 +116,10 @@ Linux             |  Windows
 1. In OBS, add a **Browser Source**
 2. Configure:
    - ✅ **Local file**: Checked
-   - 📁 **Local file path**: Browse to `widget/now-playing-widget.html`
+   - 📁 **Local file path**: 
+     - **Linux (Flatpak)**: `~/.var/app/io.github.TelioTortay.ObsNowPlaying/share/obs-now-playing/widget.html`
+     - **Windows**: Browse to the downloaded `now-playing-widget.html`
+     - **From source**: Browse to `now-playing-widget.html` in your project folder
    - 📏 **Width**: `1800`
    - 📏 **Height**: `450`
 3. In your scene, **resize the source to 600×150** for crisp rendering
