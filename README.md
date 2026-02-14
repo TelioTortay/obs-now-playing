@@ -309,7 +309,7 @@ Uses **Montserrat** font from Google Fonts ([Open Font License](https://scripts.
 - ✅ VLC
 - ✅ Windows Media Player
 - ✅ iTunes
-- ❌ Web players (Spotify Web, YouTube Music in browser)
+- 🟨 Web players (May depend on the browser used)
 
 **Linux (MPRIS):**
 - ✅ VLC
