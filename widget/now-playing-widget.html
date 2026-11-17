@@ -41,7 +41,7 @@
 
     #cover {
         height: 100%;
-        transition: background-image 0.8s ease-in-out, opacity 0.3s ease-in-out;
+        transition: background-image 0.4s ease-in-out, opacity 0.3s ease-in-out;
         aspect-ratio: 1;
         background-size: cover;
         border-radius: 4px;
@@ -271,18 +271,22 @@
         
         const newCover = mediaInfo.cover_url || '';
         if (newCover !== last_cover) {
-            coverElement.style.opacity = '0';
-            setTimeout(() => {
-                coverElement.style.backgroundImage = 'none';
-                if (newCover) {
-                    setTimeout(() => {
-                        coverElement.style.backgroundImage = `url(${newCover})`;
+            if (newCover && last_cover) {
+                coverElement.style.backgroundImage = `url(${newCover})`;
+            } else {
+                coverElement.style.opacity = '0';
+                setTimeout(() => {
+                    coverElement.style.backgroundImage = 'none';
+                    if (newCover) {
+                        setTimeout(() => {
+                            coverElement.style.backgroundImage = `url(${newCover})`;
+                            coverElement.style.opacity = '1';
+                        }, 100);
+                    } else {
                         coverElement.style.opacity = '1';
-                    }, 100);
-                } else {
-                    coverElement.style.opacity = '1';
-                }
-            }, 300);
+                    }
+                }, 300);
+            }
             last_cover = newCover;
         }
         
